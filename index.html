@@ -3,9 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Image Viewer</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-container {
+            max-width: 100%;
+            max-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            max-height: 100vh;
+            object-fit: contain;
+        }
+        .error {
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
-    
+    <div class="image-container" id="imageContainer">
+        <div class="error" id="error">Loading image...</div>
+    </div>
+
+    <script>
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Get the image parameter from URL
+        const imageName = getUrlParameter('image');
+        const imageContainer = document.getElementById('imageContainer');
+        const errorElement = document.getElementById('error');
+
+        if (imageName) {
+            const img = new Image();
+            img.onload = function() {
+                // Clear any existing content
+                imageContainer.innerHTML = '';
+                imageContainer.appendChild(img);
+            };
+            img.onerror = function() {
+                errorElement.textContent = 'Error: Image not found';
+            };
+            img.src = `images/${imageName}`;
+        } else {
+            errorElement.textContent = 'No image parameter provided. Please add ?image=filename.jpg to the URL';
+        }
+
+        // Handle keyboard events for navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Close fullscreen if needed
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+    </script>
 </body>
 </html>
